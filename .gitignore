@@ -3,33 +3,33 @@
 # ============================================
 
 # ---- Backend (Laravel) ----
-MitraAbadi_Backend/.env
-MitraAbadi_Backend/.env.*
-!MitraAbadi_Backend/.env.example
-MitraAbadi_Backend/vendor/
-MitraAbadi_Backend/node_modules/
-MitraAbadi_Backend/public/storage
-MitraAbadi_Backend/public/hot
-MitraAbadi_Backend/public/build/
-MitraAbadi_Backend/storage/*.key
-MitraAbadi_Backend/storage/logs/
-MitraAbadi_Backend/storage/framework/cache/
-MitraAbadi_Backend/storage/framework/sessions/
-MitraAbadi_Backend/storage/framework/views/
-MitraAbadi_Backend/.phpunit.result.cache
-MitraAbadi_Backend/.phpunit.cache/
-MitraAbadi_Backend/bootstrap/cache/*.php
-MitraAbadi_Backend/Homestead.yaml
-MitraAbadi_Backend/Homestead.json
-MitraAbadi_Backend/auth.json
+mitra-abadi-backend/.env
+mitra-abadi-backend/.env.*
+!mitra-abadi-backend/.env.example
+mitra-abadi-backend/vendor/
+mitra-abadi-backend/node_modules/
+mitra-abadi-backend/public/storage
+mitra-abadi-backend/public/hot
+mitra-abadi-backend/public/build/
+mitra-abadi-backend/storage/*.key
+mitra-abadi-backend/storage/logs/
+mitra-abadi-backend/storage/framework/cache/
+mitra-abadi-backend/storage/framework/sessions/
+mitra-abadi-backend/storage/framework/views/
+mitra-abadi-backend/.phpunit.result.cache
+mitra-abadi-backend/.phpunit.cache/
+mitra-abadi-backend/bootstrap/cache/*.php
+mitra-abadi-backend/Homestead.yaml
+mitra-abadi-backend/Homestead.json
+mitra-abadi-backend/auth.json
 
 # ---- Frontend (React/Vite) ----
-MitraAbadi_Frontend/.env
-MitraAbadi_Frontend/.env.*
-!MitraAbadi_Frontend/.env.example
-MitraAbadi_Frontend/node_modules/
-MitraAbadi_Frontend/dist/
-MitraAbadi_Frontend/dist-ssr/
+mitra-abadi-frontend/.env
+mitra-abadi-frontend/.env.*
+!mitra-abadi-frontend/.env.example
+mitra-abadi-frontend/node_modules/
+mitra-abadi-frontend/dist/
+mitra-abadi-frontend/dist-ssr/
 
 # ---- OS & Editor ----
 .DS_Store
@@ -45,4 +45,4 @@ Thumbs.db
 docs/superpowers/
 
 # ---- Design mockups & internal docs (bukan source code) ----
-MitraAbadi_Backend/Dokumen/stitch_remix_of_katalog_sim_kain/
+mitra-abadi-backend/Dokumen/stitch_remix_of_katalog_sim_kain/
