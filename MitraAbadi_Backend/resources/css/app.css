@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --color-on-secondary: #ffffff;
+  --color-on-primary: #ffffff;
+  --color-on-secondary-fixed: #410002;
+  --color-surface-container-low: #f3f3f3;
+  --color-inverse-primary: #ffb4ac;
+  --color-surface-container-high: #e8e8e8;
+  --color-on-primary-container: #fffdff;
+  --color-inverse-on-surface: #f1f1f1;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-background: #1a1c1c;
+  --color-surface: #f9f9f9;
+  --color-outline-variant: #e7bdb8;
+  --color-outline: #926e6b;
+  --color-on-tertiary-fixed-variant: #004b71;
+  --color-on-error: #ffffff;
+  --color-primary: #bd0015;
+  --color-background: #f9f9f9;
+  --color-surface-container-highest: #e2e2e2;
+  --color-on-primary-fixed-variant: #93000d;
+  --color-secondary-fixed: #ffdad6;
+  --color-tertiary: #006291;
+  --color-tertiary-fixed: #cbe6ff;
+  --color-on-surface: #1a1c1c;
+  --color-surface-tint: #c00015;
+  --color-on-tertiary-container: #fefdff;
+  --color-surface-container: #eeeeee;
+  --color-on-secondary-fixed-variant: #8b1918;
+  --color-on-error-container: #93000a;
+  --color-primary-container: #e61e25;
+  --color-on-primary-fixed: #410002;
+  --color-surface-bright: #f9f9f9;
+  --color-surface-dim: #dadada;
+  --color-on-tertiary: #ffffff;
+  --color-error: #ba1a1a;
+  --color-secondary-fixed-dim: #ffb4ac;
+  --color-on-surface-variant: #5d3f3c;
+  --color-primary-fixed: #ffdad6;
+  --color-on-tertiary-fixed: #001e30;
+  --color-tertiary-fixed-dim: #8ecdff;
+  --color-secondary-container: #fd6d63;
+  --color-primary-fixed-dim: #ffb4ac;
+  --color-inverse-surface: #2f3131;
+  --color-on-secondary-container: #6d0007;
+  --color-secondary: #ac322d;
+  --color-surface-variant: #e2e2e2;
+  --color-error-container: #ffdad6;
+  --color-tertiary-container: #007cb6;
+
+  --radius-DEFAULT: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 0.75rem;
+
+  --font-headline: "Manrope", sans-serif;
+  --font-display: "Manrope", sans-serif;
+  --font-body: "Manrope", sans-serif;
+  --font-label: "Manrope", sans-serif;
+  --font-sans: "Manrope", sans-serif;
+}
+
+body {
+  font-family: "Manrope", sans-serif;
+  background-color: #f9f9f9;
+  color: #1a1c1c;
+  -webkit-font-smoothing: antialiased;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.material-symbols-outlined.fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.ledger-input {
+  @apply w-full bg-transparent border-0 border-b border-outline-variant px-0 py-2 text-on-surface font-medium focus:ring-0 focus:border-primary transition-colors duration-300;
+}
+
+.ledger-label {
+  @apply text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1 block;
+}
+
+.editorial-link {
+  @apply relative inline-flex items-center gap-2 text-sm font-bold text-on-surface hover:text-primary transition-colors cursor-pointer;
+}
+
+.tonal-lift {
+  box-shadow: 0 4px 24px -8px rgba(26, 28, 28, 0.04);
+  border: 1px solid rgba(231, 189, 184, 0.15);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #e2e2e2;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #dadada;
+}

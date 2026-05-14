@@ -1,0 +1,48 @@
+# ============================================
+# ROOT — covers both backend and frontend
+# ============================================
+
+# ---- Backend (Laravel) ----
+MitraAbadi_Backend/.env
+MitraAbadi_Backend/.env.*
+!MitraAbadi_Backend/.env.example
+MitraAbadi_Backend/vendor/
+MitraAbadi_Backend/node_modules/
+MitraAbadi_Backend/public/storage
+MitraAbadi_Backend/public/hot
+MitraAbadi_Backend/public/build/
+MitraAbadi_Backend/storage/*.key
+MitraAbadi_Backend/storage/logs/
+MitraAbadi_Backend/storage/framework/cache/
+MitraAbadi_Backend/storage/framework/sessions/
+MitraAbadi_Backend/storage/framework/views/
+MitraAbadi_Backend/.phpunit.result.cache
+MitraAbadi_Backend/.phpunit.cache/
+MitraAbadi_Backend/bootstrap/cache/*.php
+MitraAbadi_Backend/Homestead.yaml
+MitraAbadi_Backend/Homestead.json
+MitraAbadi_Backend/auth.json
+
+# ---- Frontend (React/Vite) ----
+MitraAbadi_Frontend/.env
+MitraAbadi_Frontend/.env.*
+!MitraAbadi_Frontend/.env.example
+MitraAbadi_Frontend/node_modules/
+MitraAbadi_Frontend/dist/
+MitraAbadi_Frontend/dist-ssr/
+
+# ---- OS & Editor ----
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+*.suo
+*.sw?
+
+# ---- Claude AI / Superpowers (internal tooling) ----
+.claude/
+docs/superpowers/
+
+# ---- Design mockups & internal docs (bukan source code) ----
+MitraAbadi_Backend/Dokumen/stitch_remix_of_katalog_sim_kain/

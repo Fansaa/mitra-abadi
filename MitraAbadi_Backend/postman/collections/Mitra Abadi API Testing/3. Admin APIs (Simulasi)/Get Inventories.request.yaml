@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{base_url}}/api/admin/inventories"
+method: GET
+order: 1000

@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{base_url}}/api/chatbot/session"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: text
+  content: |-
+    {
+        "session_token": null
+    }
+order: 1000

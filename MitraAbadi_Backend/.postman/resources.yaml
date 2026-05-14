@@ -1,0 +1,11 @@
+# Use this workspace to collaborate
+workspace:
+  id: df4fd7c8-6a61-4c8a-ba12-0ca8d07305a3
+
+localResources:
+  collections:
+    - ..\Mitra_Abadi_Postman_Collection.json
+
+cloudResources:
+  collections:
+    ..\postman\collections\Mitra Abadi API Testing: b1110008-e021-4b71-bb80-8a651115c6aa

@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{base_url}}/api/chatbot/message"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: text
+  content: |-
+    {
+        "session_token": "MASUKKAN_TOKEN_DARI_RESPONSE_SEBELUMNYA",
+        "message": "Berapa harga kain katun?"
+    }
+order: 2000
