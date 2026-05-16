@@ -177,8 +177,8 @@ export default function Inventory() {
         <div className="grid grid-cols-12 gap-4 pb-4 border-b border-outline-variant/20 mb-6 text-xs font-body font-bold tracking-widest uppercase text-on-surface-variant">
           <div className="col-span-3">Nama Spesimen</div>
           <div className="col-span-2">Kategori</div>
-          <div className="text-right col-span-2">Stok (Roll)</div>
-          <div className="col-span-2 flex justify-end">Status</div>
+          <div className="col-span-2">Kode SKU</div>
+          <div className="col-span-2">Warna</div>
           <div className="col-span-2 text-right">Harga</div>
           <div className="col-span-1 text-right">Aksi</div>
         </div>
@@ -232,15 +232,24 @@ export default function Inventory() {
                     </span>
                   </div>
 
-                  <div className={`text-right font-body text-sm col-span-2 ${lowStock ? "font-bold text-error" : "font-medium text-on-surface"}`}>
-                    {stock}
+                  <div className="col-span-2 font-body text-xs text-on-surface font-mono">
+                    {p.sku_code || <span className="text-on-surface-variant/50 not-italic font-sans">—</span>}
                   </div>
 
-                  <div className="col-span-2 flex justify-end">
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-body font-bold tracking-widest uppercase rounded-full ${lowStock ? "bg-error-container text-error" : "bg-surface-container-low text-on-surface"}`}>
-                      <span className={`w-2 h-2 rounded-full ${lowStock ? "bg-error animate-pulse" : "bg-tertiary"}`}></span>
-                      {lowStock ? "Stok Menipis" : "Tersedia"}
-                    </span>
+                  <div className="col-span-2 flex items-center gap-1.5 flex-wrap">
+                    {p.variants?.length > 0
+                      ? p.variants.slice(0, 6).map((v) =>
+                          v.color_hex ? (
+                            <span
+                              key={v.id}
+                              title={v.color_hex}
+                              style={{ backgroundColor: v.color_hex }}
+                              className="w-4 h-4 rounded-full border border-outline-variant/40 flex-shrink-0"
+                            />
+                          ) : null
+                        )
+                      : <span className="text-on-surface-variant/50 text-xs">—</span>
+                    }
                   </div>
 
                   <div className="col-span-2 text-right font-body text-xs text-on-surface font-semibold">
