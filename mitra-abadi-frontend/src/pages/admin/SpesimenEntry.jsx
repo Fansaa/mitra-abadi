@@ -13,10 +13,9 @@ export default function SpecimenEntry() {
     price_min: "",
     price_max: "",
     sku_code: "",
-    yard_per_roll: "",
     description: "",
   });
-  const [variant, setVariant] = useState({ color_name: "", color_hex: "#4a4a4a", image: null });
+  const [variant, setVariant] = useState({ color_hex: "#4a4a4a", image: null });
 
   useEffect(() => {
     api.get("/admin/categories").then((res) => setCategories(res.data.data)).catch(console.error);
@@ -31,12 +30,10 @@ export default function SpecimenEntry() {
     try {
       const formData = new FormData();
       Object.entries(form).forEach(([k, v]) => { if (v !== "") formData.append(k, v); });
-      if (variant.color_name) {
-        formData.append("variants[0][color_name]", variant.color_name);
-        formData.append("variants[0][color_hex]", variant.color_hex);
-        formData.append("variants[0][stock_roll]", 0);
-        if (variant.image) formData.append("variants[0][image]", variant.image);
-      }
+      formData.append("variants[0][color_name]", "");
+      formData.append("variants[0][color_hex]", variant.color_hex);
+      formData.append("variants[0][stock_roll]", 0);
+      if (variant.image) formData.append("variants[0][image]", variant.image);
       await api.post("/admin/products", formData);
       navigate("/admin/inventory");
     } catch (err) {
@@ -125,50 +122,21 @@ export default function SpecimenEntry() {
                   </div>
                 </div>
 
-                {/* Yard/Roll + Warna + Warna Hex */}
-                <div className="grid grid-cols-3 gap-6">
-                  <div>
-                    <label className="font-body text-[10px] uppercase tracking-widest text-on-surface-variant block mb-2">
-                      Yard/Roll <span className="text-error">*</span>
-                    </label>
+                {/* Warna Hex */}
+                <div className="max-w-xs">
+                  <label className="font-body text-[10px] uppercase tracking-widest text-on-surface-variant block mb-2">
+                    Warna
+                  </label>
+                  <div className="flex items-center gap-4 border-b border-outline-variant py-1.5">
                     <input
-                      type="number"
-                      value={form.yard_per_roll}
-                      onChange={(e) => handleChange("yard_per_roll", e.target.value)}
-                      placeholder="55"
-                      min="0.01"
-                      step="0.01"
-                      required
-                      className="w-full border-0 border-b border-outline-variant bg-transparent px-0 py-2 font-body text-on-surface focus:ring-0 focus:border-primary transition-colors placeholder:text-on-surface-variant/40"
+                      type="color"
+                      value={variant.color_hex}
+                      onChange={(e) => setVariant((prev) => ({ ...prev, color_hex: e.target.value }))}
+                      className="w-9 h-9 rounded cursor-pointer border-0 bg-transparent p-0 flex-shrink-0"
                     />
-                  </div>
-                  <div>
-                    <label className="font-body text-[10px] uppercase tracking-widest text-on-surface-variant block mb-2">
-                      Nama Warna
-                    </label>
-                    <input
-                      type="text"
-                      value={variant.color_name}
-                      onChange={(e) => setVariant((prev) => ({ ...prev, color_name: e.target.value }))}
-                      placeholder="Mis: Deep Indigo"
-                      className="w-full border-0 border-b border-outline-variant bg-transparent px-0 py-2 font-body text-on-surface focus:ring-0 focus:border-primary transition-colors placeholder:text-on-surface-variant/40"
-                    />
-                  </div>
-                  <div>
-                    <label className="font-body text-[10px] uppercase tracking-widest text-on-surface-variant block mb-2">
-                      Warna Hex
-                    </label>
-                    <div className="flex items-center gap-3 border-b border-outline-variant py-1.5">
-                      <input
-                        type="color"
-                        value={variant.color_hex}
-                        onChange={(e) => setVariant((prev) => ({ ...prev, color_hex: e.target.value }))}
-                        className="w-8 h-8 rounded cursor-pointer border-0 bg-transparent p-0 flex-shrink-0"
-                      />
-                      <span className="font-body text-xs text-on-surface-variant font-mono tracking-wider">
-                        {variant.color_hex.toUpperCase()}
-                      </span>
-                    </div>
+                    <span className="font-body text-sm text-on-surface font-mono tracking-wider">
+                      {variant.color_hex.toUpperCase()}
+                    </span>
                   </div>
                 </div>
 

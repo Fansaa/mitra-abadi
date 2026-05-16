@@ -59,21 +59,29 @@ function FabricCard({ fabric }) {
                 : "-"}
             </span>
           </div>
-          <div className="flex gap-6 pt-4 border-t border-stone-200/50">
-            <div className="flex flex-col">
-              <span className="text-[9px] uppercase tracking-widest text-stone-500 font-bold">Yard/Roll</span>
-              <span className="text-[11px] font-bold text-stone-800">
-                {fabric.yard_per_roll ? fabric.yard_per_roll + " yd" : "-"}
-              </span>
+          <div className="pt-4 border-t border-stone-200/50 space-y-3">
+            <div className="flex gap-6">
+              <div className="flex flex-col">
+                <span className="text-[9px] uppercase tracking-widest text-stone-500 font-bold">Kategori</span>
+                <span className="text-[11px] font-bold text-stone-800">{fabric.category?.name || "-"}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] uppercase tracking-widest text-stone-500 font-bold">Kode SKU</span>
+                <span className="text-[11px] font-bold text-stone-800">{fabric.sku_code || "-"}</span>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <span className="text-[9px] uppercase tracking-widest text-stone-500 font-bold">Kode SKU</span>
-              <span className="text-[11px] font-bold text-stone-800">{fabric.sku_code || "-"}</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[9px] uppercase tracking-widest text-stone-500 font-bold">ID Ref</span>
-              <span className="text-[11px] font-bold text-stone-800">{fabric.id}</span>
-            </div>
+            {fabric.dominant_colors?.length > 0 && (
+              <div className="flex items-center gap-1.5">
+                {fabric.dominant_colors.slice(0, 5).map((hex) => (
+                  <span
+                    key={hex}
+                    title={hex}
+                    style={{ backgroundColor: hex }}
+                    className="w-4 h-4 rounded-full border border-stone-200/60 flex-shrink-0"
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -94,8 +94,7 @@ export default function CatalogDetail() {
     );
   }
 
-  const priceUSD = parsePrice(fabric.price);
-  const priceIDR = priceUSD * USD_TO_IDR;
+  const priceIDR = parsePrice(fabric.price_min);
   const totalIDR = priceIDR * meters;
   const stockStatus = getStockStatus(fabric.stock_total ?? 0);
 
@@ -267,10 +266,22 @@ export default function CatalogDetail() {
             {/* Specs Grid */}
             <div className="grid grid-cols-2 gap-px bg-stone-200 border border-stone-200 overflow-hidden">
               {[
-                { label: "Gramasi", value: fabric.gsm ? fabric.gsm + " GSM" : "-" },
-                { label: "Lebar", value: fabric.width_cm ? fabric.width_cm + " cm" : "-" },
+                { label: "Kategori", value: fabric.category?.name || "-" },
                 { label: "Kode SKU", value: fabric.sku_code || "-" },
-                { label: "Finishing", value: fabric.finish || "-" },
+                {
+                  label: "Harga / Yard",
+                  value: fabric.price_min && fabric.price_max
+                    ? `IDR ${Number(fabric.price_min).toLocaleString("id-ID")} – ${Number(fabric.price_max).toLocaleString("id-ID")}`
+                    : fabric.price_min
+                    ? `IDR ${Number(fabric.price_min).toLocaleString("id-ID")}`
+                    : "-",
+                },
+                {
+                  label: "Varian Warna",
+                  value: fabric.dominant_colors?.length
+                    ? `${fabric.dominant_colors.length} warna`
+                    : "-",
+                },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-white p-5">
                   <span className="text-[9px] uppercase tracking-[0.2em] font-black text-stone-400 block mb-1.5">
@@ -280,6 +291,20 @@ export default function CatalogDetail() {
                 </div>
               ))}
             </div>
+
+            {/* Color Swatches */}
+            {fabric.dominant_colors?.length > 0 && (
+              <div className="flex items-center gap-2 flex-wrap">
+                {fabric.dominant_colors.map((hex) => (
+                  <span
+                    key={hex}
+                    title={hex}
+                    style={{ backgroundColor: hex }}
+                    className="w-6 h-6 rounded-full border border-stone-200 flex-shrink-0"
+                  />
+                ))}
+              </div>
+            )}
 
             {/* Order Calculator */}
             <div className="bg-stone-50 border border-stone-200 p-6 space-y-5">
@@ -317,7 +342,7 @@ export default function CatalogDetail() {
               <div className="pt-4 border-t border-stone-200 space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-[9px] uppercase tracking-[0.15em] font-black text-stone-400">
-                    Harga / Meter
+                    Harga Mulai / Yard
                   </span>
                   <span className="text-xs font-bold text-stone-400">{formatIDR(priceIDR)}</span>
                 </div>
