@@ -85,7 +85,7 @@ export default function Catalog() {
               {[
                 { label: "Tentang", href: "/" },
                 { label: "Katalog", href: "/catalog", active: true },
-                { label: "Kontak", href: "/" },
+                { label: "Kontak", href: "/contact" },
               ].map((item) => (
                 <a key={item.label} href={item.href} className={`text-[15px] font-bold tracking-wide transition-all duration-200 relative ${item.active ? "text-[#e61e25]" : "text-stone-500 hover:text-stone-900"}`}>
                   {item.label}
@@ -133,7 +133,7 @@ export default function Catalog() {
               </svg>
               <input
                 type="text"
-                placeholder="Cari nama kain, SKU, atau kategori..."
+                placeholder="Cari nama kain atau kategori..."
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setVisibleCount(ITEMS_PER_PAGE); }}
                 className="w-full h-full pl-14 pr-12 py-4 bg-white border border-stone-200 text-stone-800 text-sm font-semibold rounded-2xl shadow-sm focus:outline-none focus:border-[#e61e25] focus:ring-4 focus:ring-[#e61e25]/10 transition-all placeholder:text-stone-400 placeholder:font-medium"
@@ -283,12 +283,35 @@ export default function Catalog() {
             )}
             
             {loading ? (
-              <div className="flex flex-col items-center justify-center h-96 text-center bg-white rounded-3xl border border-stone-100 shadow-sm">
-                <svg className="w-10 h-10 text-[#e61e25] animate-spin mb-4" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                </svg>
-                <p className="text-stone-500 font-bold tracking-wide">Menyiapkan katalog...</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-12 gap-x-8">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="flex flex-col">
+                    {/* Image area — aspect-[4/5] like FabricCard */}
+                    <div className="bg-stone-200 animate-pulse rounded-sm mb-5 w-full aspect-[4/5]" />
+                    {/* Product name */}
+                    <div className="bg-stone-200 animate-pulse rounded h-6 w-3/4 mb-2" />
+                    {/* Price */}
+                    <div className="bg-stone-200 animate-pulse rounded h-4 w-1/2 mb-5" />
+                    {/* Divider */}
+                    <div className="border-t border-stone-200 pt-3 space-y-3">
+                      <div className="flex gap-6">
+                        <div className="space-y-1.5">
+                          <div className="bg-stone-200 animate-pulse rounded h-2.5 w-14" />
+                          <div className="bg-stone-200 animate-pulse rounded h-3 w-20" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <div className="bg-stone-200 animate-pulse rounded h-2.5 w-14" />
+                          <div className="bg-stone-200 animate-pulse rounded h-3 w-20" />
+                        </div>
+                      </div>
+                      <div className="flex gap-1.5">
+                        {[1,2,3,4].map((n) => (
+                          <div key={n} className="w-4 h-4 rounded-full bg-stone-200 animate-pulse" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : filteredProducts.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-96 text-center bg-white rounded-3xl border border-dashed border-stone-200">

@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Catalog from "./pages/user/Catalog";
 import CatalogDetail from "./pages/user/CatalogDetail";
 import About from "./pages/user/About";
+import Contact from "./pages/user/Contact";
 
 import LoginAdmin from "./pages/admin/LoginAdmin";
 import Dashboard from "./pages/admin/Dashboard";
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/catalog/:id" element={<CatalogDetail />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/admin/login" element={<LoginAdmin />} />
 
         <Route element={<ProtectedRoute />}>

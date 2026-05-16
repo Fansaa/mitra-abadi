@@ -35,7 +35,7 @@ export default function About() {
               {[
                 { label: "Tentang", href: "/", active: true },
                 { label: "Katalog", href: "/catalog" },
-                { label: "Kontak", href: "/" },
+                { label: "Kontak", href: "/contact" },
               ].map((item) => (
                 <a key={item.label} href={item.href} className={`text-[15px] font-bold tracking-wide transition-all duration-200 relative ${item.active ? "text-[#e61e25]" : "text-stone-500 hover:text-stone-900"}`}>
                   {item.label}
@@ -121,7 +121,7 @@ export default function About() {
         </section>
 
         {/* CONTACT SECTION */}
-        <section 
+        <section
           className={`mb-12 max-w-4xl mx-auto text-center transition-all duration-1000 ease-out delay-500 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-100 text-stone-500 mb-6">

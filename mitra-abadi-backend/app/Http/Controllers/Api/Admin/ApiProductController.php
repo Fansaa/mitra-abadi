@@ -140,9 +140,11 @@ class ApiProductController extends Controller
                     if ($oldPath) Storage::disk('public')->delete($oldPath);
                 }
 
-                if (isset($vData['color_name'])) {
+                if (isset($vData['color_hex']) && $vData['color_hex'] !== '') {
+                    $updates['color_hex'] = $vData['color_hex'];
+                }
+                if (array_key_exists('color_name', $vData)) {
                     $updates['color_name'] = $vData['color_name'];
-                    $updates['color_hex']  = $vData['color_hex'] ?? $variant->color_hex;
                 }
 
                 if ($updates) $variant->update($updates);
