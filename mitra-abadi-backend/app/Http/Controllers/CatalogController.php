@@ -22,7 +22,7 @@ class CatalogController extends Controller
             ->when($request->search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%")
-                    ->orWhere('composition', 'like', "%{$search}%");
+                    ->orWhere('sku_code', 'like', "%{$search}%");
             })
             ->when($request->category, function ($query, $categorySlug) {
                 $query->whereHas('category', fn($q) => $q->where('slug', $categorySlug));

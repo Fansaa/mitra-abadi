@@ -30,7 +30,7 @@ class ApiProductController extends Controller
             'price_min'       => 'required|numeric|min:0',
             'price_max'       => 'required|numeric|min:0|gte:price_min',
             'description'     => 'nullable|string',
-            'composition'     => 'nullable|string|max:255',
+            'sku_code'        => 'nullable|string|max:255',
             'yard_per_roll'   => 'required|numeric|min:0.01',
             'variants'                       => 'nullable|array',
             'variants.*.color_name'          => 'required_with:variants|string|max:255',
@@ -52,7 +52,7 @@ class ApiProductController extends Controller
                 'price_max'    => $request->price_max,
                 'slug'         => $slug,
                 'description'  => $request->description,
-                'composition'  => $request->composition,
+                'sku_code'     => $request->sku_code,
                 'yard_per_roll' => $request->yard_per_roll,
                 'is_active'    => true,
             ]);
@@ -103,7 +103,7 @@ class ApiProductController extends Controller
             'price_min'    => 'required|numeric|min:0',
             'price_max'    => 'required|numeric|min:0|gte:price_min',
             'description'  => 'nullable|string',
-            'composition'  => 'nullable|string|max:255',
+            'sku_code'     => 'nullable|string|max:255',
             'yard_per_roll' => 'required|numeric|min:0.01',
         ]);
 
@@ -122,7 +122,7 @@ class ApiProductController extends Controller
                 'price_max'    => $request->price_max,
                 'slug'         => $slug,
                 'description'  => $request->description,
-                'composition'  => $request->composition,
+                'sku_code'     => $request->sku_code,
                 'yard_per_roll' => $request->yard_per_roll,
             ]);
 

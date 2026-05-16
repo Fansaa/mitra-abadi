@@ -35,7 +35,7 @@ class CatalogController extends Controller
             'price_min'       => $product->price_min,
             'price_max'       => $product->price_max,
             'yard_per_roll'   => $product->yard_per_roll,
-            'composition'     => $product->composition,
+            'sku_code'        => $product->sku_code,
             'description'     => $product->description,
             'badge'           => $badge,
             'category'        => $product->category

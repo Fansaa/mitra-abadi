@@ -163,7 +163,7 @@ class ChatbotController extends Controller
             $katalog .= ($i + 1) . ". {$product->name}\n";
             $katalog .= "   - Kategori   : " . ($product->category?->name ?? '-') . "\n";
             $katalog .= "   - Range Harga: {$harga}\n";
-            $katalog .= "   - Komposisi  : " . ($product->composition ?? '-') . "\n";
+            $katalog .= "   - Kode SKU   : " . ($product->sku_code ?? '-') . "\n";
             $katalog .= "   - Yard/Roll  : " . ($product->yard_per_roll ? $product->yard_per_roll . ' yard' : '-') . "\n";
             if ($warna) {
                 $katalog .= "   - Warna      : {$warna}\n";
