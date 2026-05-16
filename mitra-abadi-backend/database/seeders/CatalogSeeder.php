@@ -24,7 +24,7 @@ class CatalogSeeder extends Seeder
                     [
                         'name' => 'Katun Toyobo Premium',
                         'description' => 'Katun jepang original, serat rapat, tidak menerawang dan sangat adem.',
-                        'composition' => '100% Cotton',
+                        'sku_code' => 'SKU-KTN-001',
                         'gsm' => 130,
                         'width_cm' => 150,
                         'meter_per_roll' => 40,
@@ -38,7 +38,7 @@ class CatalogSeeder extends Seeder
                     [
                         'name' => 'Katun Madinah',
                         'description' => 'Kain katun jatuh dengan tekstur serat yang unik, sangat cocok untuk gamis.',
-                        'composition' => 'Cotton Blend',
+                        'sku_code' => 'SKU-KTN-002',
                         'gsm' => 145,
                         'width_cm' => 150,
                         'meter_per_roll' => 50,
@@ -57,7 +57,7 @@ class CatalogSeeder extends Seeder
                     [
                         'name' => 'Rayon Twill',
                         'description' => 'Rayon dengan anyaman serat twill (miring) sehingga lebih tebal dan awet.',
-                        'composition' => '100% Rayon',
+                        'sku_code' => 'SKU-RYN-001',
                         'gsm' => 150,
                         'width_cm' => 150,
                         'meter_per_roll' => 60,
@@ -70,7 +70,7 @@ class CatalogSeeder extends Seeder
                     [
                         'name' => 'Rayon Viscose Motif',
                         'description' => 'Rayon viscose motif floral elegan, kualitas export.',
-                        'composition' => '100% Viscose',
+                        'sku_code' => 'SKU-RYN-002',
                         'gsm' => 120,
                         'width_cm' => 150,
                         'meter_per_roll' => 50,
@@ -89,7 +89,7 @@ class CatalogSeeder extends Seeder
                     [
                         'name' => 'Linen Rami',
                         'description' => 'Linen dengan serat rami, kuat, tahan lama dan semakin lembut jika sering dicuci.',
-                        'composition' => 'Linen Rami Blend',
+                        'sku_code' => 'SKU-LNN-001',
                         'gsm' => 160,
                         'width_cm' => 145,
                         'meter_per_roll' => 45,
@@ -119,7 +119,7 @@ class CatalogSeeder extends Seeder
                     'name' => $prodData['name'],
                     'slug' => Str::slug($prodData['name']),
                     'description' => $prodData['description'],
-                    'composition' => $prodData['composition'],
+                    'sku_code' => $prodData['sku_code'],
                     'gsm' => $prodData['gsm'],
                     'width_cm' => $prodData['width_cm'],
                     'meter_per_roll' => $prodData['meter_per_roll'],

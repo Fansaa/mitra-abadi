@@ -16,7 +16,7 @@ class Product extends Model
         'price_max',
         'slug',
         'description',
-        'composition',
+        'sku_code',
         'yard_per_roll',
         'is_active',
     ];
