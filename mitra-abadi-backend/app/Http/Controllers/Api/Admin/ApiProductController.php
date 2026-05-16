@@ -31,9 +31,9 @@ class ApiProductController extends Controller
             'price_max'       => 'required|numeric|min:0|gte:price_min',
             'description'     => 'nullable|string',
             'sku_code'        => 'nullable|string|max:255',
-            'yard_per_roll'   => 'required|numeric|min:0.01',
+            'yard_per_roll'   => 'nullable|numeric|min:0',
             'variants'                       => 'nullable|array',
-            'variants.*.color_name'          => 'required_with:variants|string|max:255',
+            'variants.*.color_name'          => 'nullable|string|max:255',
             'variants.*.color_hex'           => 'nullable|string|max:7',
             'variants.*.image'               => 'nullable|image|max:10240',
             'variants.*.stock_roll'          => 'nullable|integer|min:0',
@@ -104,7 +104,7 @@ class ApiProductController extends Controller
             'price_max'    => 'required|numeric|min:0|gte:price_min',
             'description'  => 'nullable|string',
             'sku_code'     => 'nullable|string|max:255',
-            'yard_per_roll' => 'required|numeric|min:0.01',
+            'yard_per_roll' => 'nullable|numeric|min:0',
         ]);
 
         DB::transaction(function () use ($request, $product) {
