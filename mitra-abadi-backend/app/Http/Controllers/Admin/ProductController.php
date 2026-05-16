@@ -62,8 +62,8 @@ class ProductController extends Controller
             'sku_code' => 'nullable|string|max:255',
             'gsm' => 'nullable|integer|min:1',
             'width_cm' => 'nullable|numeric|min:0',
-            'meter_per_roll' => 'required|numeric|min:0.01',
-            'yard_per_roll' => 'required|numeric|min:0.01',
+            'meter_per_roll' => 'nullable|numeric|min:0',
+            'yard_per_roll' => 'nullable|numeric|min:0',
             'is_active' => 'boolean',
             // Varian
             'variants' => 'nullable|array',
@@ -136,8 +136,8 @@ class ProductController extends Controller
             'sku_code' => 'nullable|string|max:255',
             'gsm' => 'nullable|integer|min:1',
             'width_cm' => 'nullable|numeric|min:0',
-            'meter_per_roll' => 'required|numeric|min:0.01',
-            'yard_per_roll' => 'required|numeric|min:0.01',
+            'meter_per_roll' => 'nullable|numeric|min:0',
+            'yard_per_roll' => 'nullable|numeric|min:0',
             'is_active' => 'boolean',
         ]);
 
