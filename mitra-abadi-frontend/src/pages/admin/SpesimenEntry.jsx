@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../lib/api";
+import Swal from "sweetalert2";
 
 export default function SpecimenEntry() {
   const navigate = useNavigate();
@@ -16,10 +17,20 @@ export default function SpecimenEntry() {
     description: "",
   });
   const [variant, setVariant] = useState({ color_hex: "#4a4a4a", image: null });
+  const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     api.get("/admin/categories").then((res) => setCategories(res.data.data)).catch(console.error);
   }, []);
+
+  // Handler untuk mengunggah gambar dan membuat preview
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setVariant((prev) => ({ ...prev, image: file }));
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleChange = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
 
@@ -34,7 +45,16 @@ export default function SpecimenEntry() {
       formData.append("variants[0][color_hex]", variant.color_hex);
       formData.append("variants[0][stock_roll]", 0);
       if (variant.image) formData.append("variants[0][image]", variant.image);
+      
       await api.post("/admin/products", formData);
+      await Swal.fire({
+        title: "Berhasil!",
+        text: "Produk baru berhasil ditambahkan.",
+        icon: "success",
+        confirmButtonColor: "#e61e25",
+        timer: 1800,
+        showConfirmButton: false,
+      });
       navigate("/admin/inventory");
     } catch (err) {
       const errors = err.response?.data?.errors;
@@ -45,227 +65,276 @@ export default function SpecimenEntry() {
   };
 
   return (
-    <div className="px-8 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h2 className="text-4xl font-display font-extrabold text-on-surface tracking-tight mb-2">
-          Tambah Produk Baru
-        </h2>
-        <p className="font-body text-lg text-on-surface-variant leading-relaxed">
-          Daftarkan produk kain baru ke sistem. Pastikan semua data terisi dengan lengkap dan benar.
-        </p>
+    <div className="min-h-screen bg-stone-50 text-stone-900 font-sans pb-24" style={{ fontFamily: "Manrope, sans-serif" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+      {/* Top Navbar / Breadcrumb */}
+      <div className="bg-white border-b border-stone-200 px-8 py-5 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate(-1)}
+              className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+            </button>
+            <div>
+              <p className="text-[10px] font-extrabold uppercase tracking-widest text-stone-400">Manajemen Inventori</p>
+              <h1 className="text-xl font-extrabold text-stone-900">Tambah Produk Baru</h1>
+            </div>
+          </div>
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="hidden md:flex items-center gap-2 bg-stone-900 text-white font-bold text-[11px] uppercase tracking-widest px-6 py-3 rounded-xl hover:bg-[#e61e25] transition-all shadow-sm disabled:opacity-50"
+          >
+            {loading ? "Menyimpan..." : "Simpan Produk"}
+          </button>
+        </div>
       </div>
 
-      {/* Form */}
-      <div>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 xl:grid-cols-12 gap-8 xl:gap-12 items-start">
+      {/* Form Content */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-8 mt-10">
+        
+        <div className="mb-10 max-w-2xl">
+          <h2 className="text-3xl md:text-4xl font-black text-stone-900 leading-tight mb-3">
+            Registrasi Spesimen
+          </h2>
+          <p className="text-stone-500 font-medium leading-relaxed">
+            Daftarkan produk tekstil baru ke dalam arsip sistem. Pastikan seluruh detail seperti SKU, Harga, dan Kategori terisi dengan akurat.
+          </p>
+        </div>
 
+        {error && (
+          <div className="mb-8 p-5 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-4">
+            <svg className="w-6 h-6 text-[#e61e25] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <div>
+              <h4 className="text-sm font-extrabold text-stone-900 mb-1">Gagal menyimpan produk</h4>
+              <p className="text-sm text-red-600 font-medium">{error}</p>
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 xl:grid-cols-12 gap-8 xl:gap-10 items-start">
+          
           {/* ── Left Column ── */}
-          <div className="xl:col-span-7 flex flex-col gap-10">
-
-            {/* Informasi Dasar */}
-            <section className="bg-surface-container-lowest rounded-xl p-10 shadow-[0_40px_80px_-20px_rgba(26,28,28,0.04)]">
-              <h3 className="font-headline text-lg font-medium text-on-surface mb-8">
-                Informasi Dasar
+          <div className="xl:col-span-7 flex flex-col gap-8">
+            
+            {/* Informasi Dasar Card */}
+            <div className="bg-white p-8 md:p-10 rounded-[2rem] shadow-sm border border-stone-100">
+              <h3 className="text-lg font-black text-stone-900 flex items-center gap-3 mb-8 pb-6 border-b border-stone-100">
+                <svg className="w-5 h-5 text-[#e61e25]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Informasi Utama
               </h3>
-              <div className="space-y-8">
-
+              
+              <div className="space-y-6">
                 {/* Nama Spesimen */}
                 <div>
-                  <label className="font-body text-[10px] uppercase tracking-widest text-on-surface-variant block mb-2">
-                    Nama Spesimen <span className="text-error">*</span>
+                  <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-2.5 block">
+                    Nama Kain / Spesimen <span className="text-[#e61e25]">*</span>
                   </label>
                   <input
                     type="text"
                     value={form.name}
                     onChange={(e) => handleChange("name", e.target.value)}
-                    placeholder="Mis: Royal Silk Jacquard Motif Kawung"
+                    placeholder="Misal: Premium Katun Toyobo Fodu"
                     required
-                    className="w-full border-0 border-b border-outline-variant bg-transparent px-0 py-2 font-body text-on-surface focus:ring-0 focus:border-primary transition-colors placeholder:text-on-surface-variant/40"
+                    className="w-full bg-stone-50 border border-stone-200 text-stone-800 text-sm font-bold rounded-2xl px-5 py-4 focus:outline-none focus:border-[#e61e25] focus:ring-4 focus:ring-[#e61e25]/10 transition-all placeholder:text-stone-400 placeholder:font-medium"
                   />
                 </div>
 
-                {/* Kode SKU + Kategori */}
-                <div className="grid grid-cols-2 gap-8">
+                {/* Grid SKU & Kategori */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="font-body text-[10px] uppercase tracking-widest text-on-surface-variant block mb-2">
-                      Kode SKU
+                    <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-2.5 block">
+                      Kode SKU <span className="text-[#e61e25]">*</span>
                     </label>
                     <input
                       type="text"
                       value={form.sku_code}
                       onChange={(e) => handleChange("sku_code", e.target.value)}
-                      placeholder="Mis: SKU-001-SILK"
-                      className="w-full border-0 border-b border-outline-variant bg-transparent px-0 py-2 font-body text-on-surface focus:ring-0 focus:border-primary transition-colors placeholder:text-on-surface-variant/40"
+                      placeholder="Misal: SKU-KTN-001"
+                      required
+                      className="w-full bg-stone-50 border border-stone-200 text-stone-800 text-sm font-bold rounded-2xl px-5 py-4 focus:outline-none focus:border-[#e61e25] focus:ring-4 focus:ring-[#e61e25]/10 transition-all placeholder:text-stone-400 placeholder:font-medium"
                     />
                   </div>
                   <div>
-                    <label className="font-body text-[10px] uppercase tracking-widest text-on-surface-variant block mb-2">
-                      Kategori Material <span className="text-error">*</span>
+                    <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-2.5 block">
+                      Kategori <span className="text-[#e61e25]">*</span>
                     </label>
-                    <div className="relative">
+                    <div className="relative group">
                       <select
                         value={form.category_id}
                         onChange={(e) => handleChange("category_id", e.target.value)}
                         required
-                        className="w-full border-0 border-b border-outline-variant bg-transparent px-0 py-2 font-body text-on-surface focus:ring-0 focus:border-primary transition-colors appearance-none cursor-pointer"
+                        className="w-full appearance-none bg-stone-50 border border-stone-200 text-stone-800 text-sm font-bold rounded-2xl pl-5 pr-12 py-4 focus:outline-none focus:border-[#e61e25] focus:ring-4 focus:ring-[#e61e25]/10 transition-all cursor-pointer"
                       >
-                        <option value="" disabled>Pilih Kategori</option>
+                        <option value="" disabled>Pilih Kategori Kriteria</option>
                         {categories.map((c) => (
                           <option key={c.id} value={c.id}>{c.name}</option>
                         ))}
                       </select>
-                      <span className="material-symbols-outlined absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
-                        expand_more
-                      </span>
+                      <svg className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400 group-focus-within:text-[#e61e25] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                      </svg>
                     </div>
                   </div>
                 </div>
 
-                {/* Warna Hex */}
-                <div className="max-w-xs">
-                  <label className="font-body text-[10px] uppercase tracking-widest text-on-surface-variant block mb-2">
-                    Warna
+                {/* Deskripsi */}
+                <div>
+                  <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-2.5 block">
+                    Deskripsi Lengkap
                   </label>
-                  <div className="flex items-center gap-4 border-b border-outline-variant py-1.5">
+                  <textarea
+                    value={form.description}
+                    onChange={(e) => handleChange("description", e.target.value)}
+                    placeholder="Tuliskan detail tekstur, komposisi, atau rekomendasi penggunaan bahan ini..."
+                    className="w-full min-h-[160px] resize-none bg-stone-50 border border-stone-200 text-stone-800 text-sm font-semibold rounded-2xl px-5 py-4 focus:outline-none focus:border-[#e61e25] focus:ring-4 focus:ring-[#e61e25]/10 transition-all placeholder:text-stone-400 placeholder:font-medium leading-relaxed"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Pricing Card */}
+            <div className="bg-white p-8 md:p-10 rounded-[2rem] shadow-sm border border-stone-100">
+              <h3 className="text-lg font-black text-stone-900 flex items-center gap-3 mb-8 pb-6 border-b border-stone-100">
+                <svg className="w-5 h-5 text-[#e61e25]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Range Harga per Yard (IDR)
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-2.5 block">
+                    Harga Minimum <span className="text-[#e61e25]">*</span>
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 font-bold">Rp</span>
                     <input
-                      type="color"
-                      value={variant.color_hex}
-                      onChange={(e) => setVariant((prev) => ({ ...prev, color_hex: e.target.value }))}
-                      className="w-9 h-9 rounded cursor-pointer border-0 bg-transparent p-0 flex-shrink-0"
+                      type="number"
+                      value={form.price_min}
+                      onChange={(e) => handleChange("price_min", e.target.value)}
+                      placeholder="35000"
+                      min="0"
+                      required
+                      className="w-full bg-stone-50 border border-stone-200 text-stone-800 text-sm font-bold rounded-2xl pl-12 pr-5 py-4 focus:outline-none focus:border-[#e61e25] focus:ring-4 focus:ring-[#e61e25]/10 transition-all placeholder:text-stone-400 placeholder:font-medium"
                     />
-                    <span className="font-body text-sm text-on-surface font-mono tracking-wider">
-                      {variant.color_hex.toUpperCase()}
-                    </span>
                   </div>
                 </div>
-
-              </div>
-            </section>
-
-            {/* Range Harga/Yard */}
-            <section className="bg-surface-container-lowest rounded-xl p-10 shadow-[0_40px_80px_-20px_rgba(26,28,28,0.04)]">
-              <h3 className="font-headline text-lg font-medium text-on-surface mb-8">
-                Range Harga/Yard (IDR)
-              </h3>
-              <div className="grid grid-cols-2 gap-8">
                 <div>
-                  <label className="font-body text-[10px] uppercase tracking-widest text-on-surface-variant block mb-2">
-                    Harga Minimum <span className="text-error">*</span>
+                  <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-2.5 block">
+                    Harga Maksimum <span className="text-[#e61e25]">*</span>
                   </label>
-                  <input
-                    type="number"
-                    value={form.price_min}
-                    onChange={(e) => handleChange("price_min", e.target.value)}
-                    placeholder="50000"
-                    min="0"
-                    required
-                    className="w-full border-0 border-b border-outline-variant bg-transparent px-0 py-2 font-body text-on-surface focus:ring-0 focus:border-primary transition-colors placeholder:text-on-surface-variant/40"
-                  />
-                </div>
-                <div>
-                  <label className="font-body text-[10px] uppercase tracking-widest text-on-surface-variant block mb-2">
-                    Harga Maksimum <span className="text-error">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    value={form.price_max}
-                    onChange={(e) => handleChange("price_max", e.target.value)}
-                    placeholder="150000"
-                    min="0"
-                    required
-                    className="w-full border-0 border-b border-outline-variant bg-transparent px-0 py-2 font-body text-on-surface focus:ring-0 focus:border-primary transition-colors placeholder:text-on-surface-variant/40"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 font-bold">Rp</span>
+                    <input
+                      type="number"
+                      value={form.price_max}
+                      onChange={(e) => handleChange("price_max", e.target.value)}
+                      placeholder="45000"
+                      min="0"
+                      required
+                      className="w-full bg-stone-50 border border-stone-200 text-stone-800 text-sm font-bold rounded-2xl pl-12 pr-5 py-4 focus:outline-none focus:border-[#e61e25] focus:ring-4 focus:ring-[#e61e25]/10 transition-all placeholder:text-stone-400 placeholder:font-medium"
+                    />
+                  </div>
                 </div>
               </div>
-            </section>
+            </div>
 
           </div>
 
           {/* ── Right Column ── */}
-          <div className="xl:col-span-5 flex flex-col gap-10">
-
-            {/* Media Arsip */}
-            <section className="bg-surface-container-lowest rounded-xl p-8 shadow-[0_40px_80px_-20px_rgba(26,28,28,0.04)]">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="font-headline text-lg font-medium text-on-surface">Media Arsip</h3>
-                <span className="font-body text-[10px] uppercase tracking-widest text-outline bg-surface-container px-2 py-1 rounded-full">
-                  Resolusi Tinggi
-                </span>
-              </div>
-              <label className="relative group border-2 border-dashed border-outline-variant hover:border-primary transition-colors duration-300 rounded-xl bg-surface-container-lowest overflow-hidden cursor-pointer h-72 flex flex-col items-center justify-center text-center p-8 block">
-                {variant.image ? (
-                  <div className="flex flex-col items-center gap-3">
-                    <span className="material-symbols-outlined text-4xl text-primary">check_circle</span>
-                    <p className="font-body text-sm text-on-surface font-medium break-all px-2">{variant.image.name}</p>
-                    <p className="font-body text-[10px] text-on-surface-variant">Klik untuk ganti foto</p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-300">
-                      <span className="material-symbols-outlined text-3xl text-on-surface-variant group-hover:text-primary transition-colors">
-                        add_a_photo
-                      </span>
-                    </div>
-                    <p className="font-body text-sm text-on-surface font-medium mb-1">
-                      Klik atau seret foto ke sini
-                    </p>
-                    <p className="font-body text-xs text-on-surface-variant max-w-[200px]">
-                      JPG, PNG — Maksimal 10MB
-                    </p>
-                  </>
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => setVariant((prev) => ({ ...prev, image: e.target.files[0] }))}
-                />
-              </label>
-            </section>
-
-            {/* Deskripsi Produk */}
-            <section className="bg-surface-container-lowest rounded-xl p-8 shadow-[0_40px_80px_-20px_rgba(26,28,28,0.04)] flex-1 flex flex-col">
-              <h3 className="font-headline text-lg font-medium text-on-surface mb-6">
-                Deskripsi Produk
+          <div className="xl:col-span-5 flex flex-col gap-8">
+            
+            {/* Visual Produk Card */}
+            <div className="bg-white p-8 md:p-10 rounded-[2rem] shadow-sm border border-stone-100">
+              <h3 className="text-lg font-black text-stone-900 flex items-center gap-3 mb-8 pb-6 border-b border-stone-100">
+                <svg className="w-5 h-5 text-[#e61e25]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                Visual Produk
               </h3>
-              <div className="relative flex-1 flex flex-col">
-                <textarea
-                  value={form.description}
-                  onChange={(e) => handleChange("description", e.target.value)}
-                  placeholder="Tuliskan karakteristik tekstur, keunggulan produk, cara perawatan, atau keterangan lainnya..."
-                  className="w-full flex-1 min-h-[200px] resize-none border-0 bg-surface-container-low rounded-lg p-6 font-body text-sm text-on-surface focus:ring-0 focus:bg-surface-container-highest transition-colors placeholder:text-on-surface-variant/50 leading-relaxed"
-                />
-                <div className="absolute bottom-4 right-6 pointer-events-none">
-                  <span className="material-symbols-outlined text-outline-variant/30 text-4xl">
-                    edit_document
-                  </span>
+
+              {/* Photo Upload */}
+              <div className="mb-8">
+                <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-2.5 block">
+                  Foto Utama Resolusi Tinggi
+                </label>
+                <label className="relative block w-full h-[320px] rounded-3xl border-2 border-dashed border-stone-200 bg-stone-50 hover:bg-red-50/50 hover:border-[#e61e25]/50 transition-all duration-300 cursor-pointer overflow-hidden group">
+                  {imagePreview ? (
+                    <>
+                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-stone-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span className="bg-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg flex items-center gap-2">
+                          <svg className="w-4 h-4 text-stone-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                          Ganti Foto
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
+                      <div className="w-16 h-16 rounded-full bg-white shadow-sm border border-stone-100 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-md transition-all duration-300">
+                        <svg className="w-8 h-8 text-stone-300 group-hover:text-[#e61e25] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                      </div>
+                      <p className="font-bold text-stone-800 mb-1">Klik untuk unggah foto</p>
+                      <p className="text-xs font-medium text-stone-400">Atau seret & letakkan file di sini<br/>(Maksimal 10MB, JPG/PNG)</p>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </div>
+
+              {/* Varian Warna Default */}
+              <div className="p-6 rounded-2xl bg-stone-50 border border-stone-200">
+                <div className="flex items-center justify-between mb-4">
+                  <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500">
+                    Varian Warna (Hex)
+                  </label>
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest bg-stone-200 text-stone-600 px-2 py-1 rounded-md">Default</span>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-stone-200 flex-shrink-0">
+                    <input
+                      type="color"
+                      value={variant.color_hex}
+                      onChange={(e) => setVariant((prev) => ({ ...prev, color_hex: e.target.value }))}
+                      className="absolute -top-2 -left-2 w-16 h-16 cursor-pointer"
+                    />
+                  </div>
+                  <div className="flex-1 bg-white border border-stone-200 rounded-xl px-4 py-3 flex items-center justify-between">
+                    <span className="font-mono text-sm font-bold text-stone-800 tracking-wider">
+                      {variant.color_hex.toUpperCase()}
+                    </span>
+                    <span className="text-xs font-semibold text-stone-400">Kode Warna</span>
+                  </div>
                 </div>
               </div>
-            </section>
 
+            </div>
           </div>
         </form>
 
-        {/* Action Bar */}
-        <div className="mt-16 pt-8 border-t border-outline-variant/20 flex items-center justify-end gap-6">
-          {error && <p className="text-red-500 text-sm mt-2 mr-auto">{error}</p>}
+        {/* Mobile Action Bar */}
+        <div className="md:hidden mt-8 flex flex-col gap-4">
           <button
-            type="button"
+            onClick={handleSubmit}
+            disabled={loading}
+            className="w-full bg-stone-900 text-white font-bold text-[12px] uppercase tracking-widest py-4 rounded-xl shadow-lg hover:bg-[#e61e25] transition-colors disabled:opacity-50"
+          >
+            {loading ? "Menyimpan..." : "Simpan Produk"}
+          </button>
+          <button
             onClick={() => navigate(-1)}
-            className="text-on-surface-variant font-body text-[11px] uppercase tracking-widest font-semibold px-4 py-3 hover:text-on-surface transition-colors"
+            className="w-full bg-white border border-stone-200 text-stone-600 font-bold text-[12px] uppercase tracking-widest py-4 rounded-xl hover:bg-stone-50 transition-colors"
           >
             Batal
           </button>
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={loading}
-            className="bg-primary-container text-on-primary-container font-body text-[11px] uppercase tracking-widest font-semibold px-10 py-4 rounded shadow-lg shadow-primary-container/20 hover:bg-primary hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {loading ? "Menyimpan..." : "Simpan ke Arsip"}
-          </button>
         </div>
+
       </div>
     </div>
   );

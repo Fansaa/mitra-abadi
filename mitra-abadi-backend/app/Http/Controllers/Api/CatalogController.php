@@ -22,10 +22,9 @@ class CatalogController extends Controller
             $badge = 'New Arrival';
         }
 
-        $baseUrl = config('app.url');
-        $images  = $variants
+        $imagePaths = $variants
             ->filter(fn($v) => $v->image_path)
-            ->map(fn($v) => $baseUrl . '/storage/' . $v->image_path)
+            ->pluck('image_path')
             ->values()
             ->toArray();
 
@@ -43,13 +42,13 @@ class CatalogController extends Controller
                 : null,
             'stock_total'     => $stockTotal,
             'dominant_colors' => $variants->pluck('color_hex')->filter()->values()->toArray(),
-            'img'             => $images[0] ?? null,
-            'thumbnails'      => $images,
+            'img'             => $imagePaths[0] ?? null,
+            'thumbnails'      => $imagePaths,
             'variants'        => $variants->map(fn($v) => [
                 'id'         => $v->id,
                 'color_name' => $v->color_name,
                 'color_hex'  => $v->color_hex,
-                'image_path' => $v->image_path ? $baseUrl . '/storage/' . $v->image_path : null,
+                'image_path' => $v->image_path,
                 'stock_roll' => $v->inventory?->stock_roll ?? 0,
             ])->values(),
         ];

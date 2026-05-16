@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../lib/api";
-import SectionLoader from "../../components/SectionLoader";
+import Sk from "../../components/Skeleton";
 
 // --- Helpers ---
 
@@ -22,17 +23,17 @@ function formatDate(dateStr) {
 }
 
 const STATUS_MAP = {
-  pending: { label: "Menunggu", color: "bg-amber-100 text-amber-700 border-amber-200" },
-  processing: { label: "Diproses", color: "bg-blue-100 text-blue-700 border-blue-200" },
-  completed: { label: "Selesai", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  cancelled: { label: "Dibatalkan", color: "bg-red-100 text-red-700 border-red-200" },
+  pending: { label: "Menunggu", color: "bg-amber-50 text-amber-600 border-amber-200" },
+  processing: { label: "Diproses", color: "bg-blue-50 text-blue-600 border-blue-200" },
+  completed: { label: "Selesai", color: "bg-emerald-50 text-emerald-600 border-emerald-200" },
+  cancelled: { label: "Dibatalkan", color: "bg-red-50 text-red-600 border-red-200" },
 };
 
 function StatusBadge({ status }) {
-  const cfg = STATUS_MAP[status] ?? { label: status, color: "bg-gray-100 text-gray-600 border-gray-200" };
+  const cfg = STATUS_MAP[status] ?? { label: status, color: "bg-stone-100 text-stone-600 border-stone-200" };
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${cfg.color}`}
+      className={`inline-flex items-center px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-widest border ${cfg.color}`}
     >
       {cfg.label}
     </span>
@@ -90,133 +91,144 @@ function DetailModal({ order, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/40 backdrop-blur-sm transition-opacity"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div className="bg-white rounded-[2rem] shadow-[0_24px_64px_-12px_rgba(0,0,0,0.2)] border border-stone-100 w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
+        
         {/* Modal Header */}
-        <div className="flex items-start justify-between px-8 pt-8 pb-6 border-b border-outline-variant">
-          <div>
-            <p className="font-body text-xs uppercase tracking-widest text-on-surface-variant mb-1">
-              Detail Transaksi
-            </p>
-            <h3 className="font-headline text-xl font-bold text-on-surface">
-              {order.order_code}
-            </h3>
+        <div className="flex items-center justify-between px-8 py-6 border-b border-stone-100 bg-stone-50/50">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-2xl bg-red-50 text-[#e61e25] flex items-center justify-center shrink-0 border border-red-100">
+              <span className="material-symbols-outlined text-[20px]">receipt_long</span>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] font-extrabold text-stone-400 mb-0.5">
+                Detail Transaksi
+              </p>
+              <h3 className="text-lg font-black text-stone-900 leading-tight">
+                {order.order_code}
+              </h3>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="text-on-surface-variant hover:text-on-surface transition-colors p-1"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-stone-400 hover:bg-stone-100 hover:text-stone-900 transition-colors"
             aria-label="Tutup"
           >
-            <span className="material-symbols-outlined">close</span>
+            <span className="material-symbols-outlined text-[22px]">close</span>
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="overflow-y-auto flex-1 px-8 py-6 space-y-6">
+        <div className="overflow-y-auto flex-1 p-8 space-y-8 bg-stone-50/30">
+          
           {/* Status & Date */}
-          <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex flex-wrap gap-4 items-center bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
             <StatusBadge status={order.status} />
-            <span className="font-body text-sm text-on-surface-variant">
-              {formatDate(order.created_at)}
-            </span>
+            <div className="w-px h-6 bg-stone-200"></div>
+            <div className="flex items-center gap-2 text-stone-500">
+              <span className="material-symbols-outlined text-[18px]">calendar_today</span>
+              <span className="font-semibold text-sm">
+                {formatDate(order.created_at)}
+              </span>
+            </div>
           </div>
 
           {/* Customer Info */}
           <section>
-            <h4 className="font-body text-xs uppercase tracking-widest font-semibold text-on-surface-variant mb-3">
+            <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-4 flex items-center gap-2">
+              <span className="material-symbols-outlined text-[16px]">person</span>
               Informasi Pelanggan
             </h4>
-            <div className="bg-surface-container-low rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="bg-white rounded-2xl p-6 border border-stone-100 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
               <div>
-                <p className="font-body text-xs text-on-surface-variant">Nama</p>
-                <p className="font-body text-sm font-medium text-on-surface">{order.customer_name || "-"}</p>
+                <p className="text-[10px] uppercase tracking-widest font-bold text-stone-400 mb-1">Nama Lengkap</p>
+                <p className="text-sm font-extrabold text-stone-900">{order.customer_name || "-"}</p>
               </div>
               <div>
-                <p className="font-body text-xs text-on-surface-variant">Telepon</p>
-                <p className="font-body text-sm font-medium text-on-surface">{order.customer_phone || "-"}</p>
+                <p className="text-[10px] uppercase tracking-widest font-bold text-stone-400 mb-1">Nomor Telepon</p>
+                <p className="text-sm font-extrabold text-stone-900">{order.customer_phone || "-"}</p>
               </div>
               <div>
-                <p className="font-body text-xs text-on-surface-variant">Email</p>
-                <p className="font-body text-sm font-medium text-on-surface">{order.customer_email || "-"}</p>
+                <p className="text-[10px] uppercase tracking-widest font-bold text-stone-400 mb-1">Email</p>
+                <p className="text-sm font-extrabold text-stone-900">{order.customer_email || "-"}</p>
               </div>
               <div>
-                <p className="font-body text-xs text-on-surface-variant">Alamat</p>
-                <p className="font-body text-sm font-medium text-on-surface">{order.customer_address || "-"}</p>
+                <p className="text-[10px] uppercase tracking-widest font-bold text-stone-400 mb-1">Alamat Pengiriman</p>
+                <p className="text-sm font-medium text-stone-700 leading-relaxed">{order.customer_address || "-"}</p>
               </div>
             </div>
           </section>
 
           {/* Items Table */}
           <section>
-            <h4 className="font-body text-xs uppercase tracking-widest font-semibold text-on-surface-variant mb-3">
+            <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-4 flex items-center gap-2">
+              <span className="material-symbols-outlined text-[16px]">inventory_2</span>
               Item Pesanan
             </h4>
-            <div className="overflow-x-auto rounded-xl border border-outline-variant">
-              <table className="w-full text-sm">
-                <thead className="bg-surface-container-low">
-                  <tr>
-                    <th className="text-left font-body text-xs uppercase tracking-widest text-on-surface-variant px-4 py-3">
-                      Produk
-                    </th>
-                    <th className="text-left font-body text-xs uppercase tracking-widest text-on-surface-variant px-4 py-3">
-                      Warna
-                    </th>
-                    <th className="text-right font-body text-xs uppercase tracking-widest text-on-surface-variant px-4 py-3">
-                      Qty (Roll)
-                    </th>
-                    <th className="text-right font-body text-xs uppercase tracking-widest text-on-surface-variant px-4 py-3">
-                      Subtotal
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-outline-variant/30">
-                  {(order.items ?? []).map((item, idx) => (
-                    <tr key={item.id ?? idx} className="hover:bg-surface-container-low/50 transition-colors">
-                      <td className="px-4 py-3 font-medium text-on-surface">
-                        {item.product_name ?? item.name ?? "-"}
-                      </td>
-                      <td className="px-4 py-3 text-on-surface-variant">
-                        {item.color_name ?? item.color ?? "-"}
-                      </td>
-                      <td className="px-4 py-3 text-right text-on-surface">
-                        {item.qty_roll ?? "-"}
-                      </td>
-                      <td className="px-4 py-3 text-right font-medium text-on-surface">
-                        {item.subtotal != null ? formatIDR(item.subtotal) : "-"}
-                      </td>
-                    </tr>
-                  ))}
-                  {(order.items ?? []).length === 0 && (
+            <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-stone-50 border-b border-stone-100">
                     <tr>
-                      <td colSpan={4} className="px-4 py-6 text-center text-on-surface-variant font-body text-sm">
-                        Tidak ada item.
-                      </td>
+                      <th className="font-extrabold text-[10px] uppercase tracking-widest text-stone-400 px-6 py-4">Produk</th>
+                      <th className="font-extrabold text-[10px] uppercase tracking-widest text-stone-400 px-4 py-4">Warna</th>
+                      <th className="font-extrabold text-[10px] uppercase tracking-widest text-stone-400 px-4 py-4 text-center">Qty (Roll)</th>
+                      <th className="font-extrabold text-[10px] uppercase tracking-widest text-stone-400 px-6 py-4 text-right">Subtotal</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-stone-100">
+                    {(order.items ?? []).map((item, idx) => (
+                      <tr key={item.id ?? idx} className="hover:bg-stone-50/50 transition-colors">
+                        <td className="px-6 py-4 font-bold text-stone-900">
+                          {item.product_name ?? item.name ?? "-"}
+                        </td>
+                        <td className="px-4 py-4">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-stone-100 border border-stone-200 text-xs font-semibold text-stone-600">
+                            {item.color_name ?? item.color ?? "-"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-center font-bold text-stone-700">
+                          {item.qty_roll ?? "-"}
+                        </td>
+                        <td className="px-6 py-4 text-right font-black text-stone-900">
+                          {item.subtotal != null ? formatIDR(item.subtotal) : "-"}
+                        </td>
+                      </tr>
+                    ))}
+                    {(order.items ?? []).length === 0 && (
+                      <tr>
+                        <td colSpan={4} className="px-6 py-8 text-center text-stone-500 font-medium text-sm bg-stone-50/50">
+                          Tidak ada item dalam pesanan ini.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </section>
 
           {/* Total & Notes */}
-          <section className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            {order.notes && (
-              <div className="flex-1">
-                <p className="font-body text-xs uppercase tracking-widest text-on-surface-variant mb-1">
-                  Catatan
+          <section className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 bg-stone-900 text-white p-6 md:p-8 rounded-3xl shadow-lg">
+            {order.notes ? (
+              <div className="flex-1 max-w-sm">
+                <p className="text-[10px] uppercase tracking-widest font-extrabold text-stone-400 mb-2">
+                  Catatan Pelanggan
                 </p>
-                <p className="font-body text-sm text-on-surface bg-surface-container-low rounded-lg px-4 py-2">
-                  {order.notes}
+                <p className="text-sm font-medium text-stone-300 leading-relaxed italic bg-white/10 p-4 rounded-xl">
+                  "{order.notes}"
                 </p>
               </div>
+            ) : (
+              <div className="flex-1"></div> // spacer
             )}
-            <div className="sm:text-right">
-              <p className="font-body text-xs uppercase tracking-widest text-on-surface-variant mb-1">
-                Total
+            <div className="md:text-right flex flex-col justify-center">
+              <p className="text-[10px] uppercase tracking-widest font-extrabold text-stone-400 mb-1">
+                Total Tagihan
               </p>
-              <p className="font-headline text-2xl font-bold text-primary">
+              <p className="text-3xl font-black text-white tracking-tight">
                 {formatIDR(order.total_amount)}
               </p>
             </div>
@@ -224,36 +236,36 @@ function DetailModal({ order, onClose }) {
         </div>
 
         {/* Modal Footer */}
-        <div className="px-8 py-5 border-t border-outline-variant flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
+        <div className="px-8 py-6 border-t border-stone-100 bg-white flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={handleDownloadInvoice}
               disabled={downloadingInvoice}
-              className="inline-flex items-center gap-1.5 font-body text-sm font-semibold px-4 py-2.5 rounded-lg bg-primary text-on-primary hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex items-center justify-center gap-2 font-bold text-[11px] uppercase tracking-widest px-6 py-3.5 rounded-xl bg-stone-900 text-white hover:bg-[#e61e25] disabled:opacity-50 disabled:hover:bg-stone-900 shadow-sm transition-colors"
             >
               {downloadingInvoice ? (
-                <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
               ) : (
-                <span className="material-symbols-outlined text-[18px]">receipt_long</span>
+                <span className="material-symbols-outlined text-[16px]">receipt_long</span>
               )}
               Unduh Invoice
             </button>
             <button
               onClick={handleDownloadPackingList}
               disabled={downloadingPacking}
-              className="inline-flex items-center gap-1.5 font-body text-sm font-semibold px-4 py-2.5 rounded-lg bg-secondary text-on-secondary hover:bg-secondary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex items-center justify-center gap-2 font-bold text-[11px] uppercase tracking-widest px-6 py-3.5 rounded-xl bg-white border border-stone-200 text-stone-700 hover:bg-stone-50 hover:text-stone-900 disabled:opacity-50 transition-colors shadow-sm"
             >
               {downloadingPacking ? (
-                <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
               ) : (
-                <span className="material-symbols-outlined text-[18px]">inventory_2</span>
+                <span className="material-symbols-outlined text-[16px]">inventory_2</span>
               )}
               Unduh Packing List
             </button>
           </div>
           <button
             onClick={onClose}
-            className="font-body text-sm font-semibold px-6 py-2.5 rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors"
+            className="font-bold text-[11px] uppercase tracking-widest px-6 py-3.5 rounded-xl text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
           >
             Tutup
           </button>
@@ -266,6 +278,7 @@ function DetailModal({ order, onClose }) {
 // --- Main Page ---
 
 export default function RiwayatTransaksi() {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -352,241 +365,274 @@ export default function RiwayatTransaksi() {
 
   return (
     <>
-      <div className="px-8 py-8">
-        {/* Page Header */}
-        <div className="mb-8 flex justify-between items-end">
-          <div>
-            <h2 className="text-4xl font-display font-extrabold tracking-tight text-on-surface mb-2">
-              Riwayat Transaksi
+      <div className="min-h-screen bg-stone-50 text-stone-900 font-sans pb-24" style={{ fontFamily: "Manrope, sans-serif" }}>
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+        {/* Top Navbar / Breadcrumb */}
+        <div className="bg-white border-b border-stone-200 px-8 py-5 sticky top-0 z-30 shadow-sm">
+          <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate(-1)}
+                className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+              </button>
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-stone-400">Panel Admin</p>
+                <h1 className="text-xl font-extrabold text-stone-900">Riwayat Transaksi</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-[1400px] mx-auto px-6 md:px-8 mt-10">
+
+          {/* Page Header Info */}
+          <div className="mb-8 max-w-2xl">
+            <h2 className="text-3xl md:text-4xl font-black text-stone-900 leading-tight mb-3">
+              Semua Pesanan
             </h2>
-            <p className="font-body text-on-surface-variant text-lg leading-relaxed">
-              Pantau dan kelola seluruh riwayat pesanan pelanggan secara terpusat.
+            <p className="text-stone-500 font-medium leading-relaxed">
+              Pantau dan kelola seluruh riwayat pesanan pelanggan secara terpusat. Filter berdasarkan status atau tanggal untuk pencarian cepat.
             </p>
           </div>
-        </div>
 
-        {/* Filter Bar */}
-        <div className="bg-surface-container-lowest rounded-xl p-6 mb-6 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Search */}
-            <div className="lg:col-span-2">
-              <label className="block font-body text-xs uppercase tracking-widest font-semibold text-on-surface-variant mb-2">
-                Cari
-              </label>
-              <div className="relative bg-surface-container-low rounded-lg flex items-center">
-                <span className="material-symbols-outlined text-on-surface-variant ml-3 text-[20px] select-none">
-                  search
-                </span>
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Nama pelanggan atau kode order..."
-                  className="w-full bg-transparent border-none focus:ring-0 font-body text-sm text-on-surface placeholder-on-surface-variant py-2.5 px-3"
-                />
-                {search && (
-                  <button
-                    onClick={() => setSearch("")}
-                    className="mr-3 text-on-surface-variant hover:text-on-surface transition-colors"
+          {/* Filter Bar Card */}
+          <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-stone-100 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              
+              {/* Search */}
+              <div className="lg:col-span-2">
+                <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-2.5 block">
+                  Pencarian
+                </label>
+                <div className="relative group">
+                  <svg className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400 group-focus-within:text-[#e61e25] transition-colors pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Nama pelanggan atau kode order..."
+                    className="w-full bg-stone-50 border border-stone-200 text-stone-800 text-sm font-bold rounded-2xl pl-14 pr-4 py-4 focus:outline-none focus:border-[#e61e25] focus:ring-4 focus:ring-[#e61e25]/10 transition-all placeholder:text-stone-400"
+                  />
+                  {search && (
+                    <button onClick={() => setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-stone-200 text-stone-500 rounded-full hover:bg-stone-300 transition-colors">
+                      <span className="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Status Filter */}
+              <div>
+                <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-2.5 block">
+                  Status
+                </label>
+                <div className="relative group">
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="w-full appearance-none bg-stone-50 border border-stone-200 text-stone-800 text-sm font-bold rounded-2xl pl-5 pr-12 py-4 focus:outline-none focus:border-[#e61e25] focus:ring-4 focus:ring-[#e61e25]/10 transition-all cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-[18px]">close</span>
-                  </button>
-                )}
+                    <option value="all">Semua Status</option>
+                    <option value="pending">Menunggu</option>
+                    <option value="processing">Diproses</option>
+                    <option value="completed">Selesai</option>
+                    <option value="cancelled">Dibatalkan</option>
+                  </select>
+                  <svg className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400 group-focus-within:text-[#e61e25] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+
+              <div className="hidden lg:block"></div>
+
+              {/* Date From */}
+              <div>
+                <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-2.5 block">
+                  Dari Tanggal
+                </label>
+                <input
+                  type="date"
+                  value={tanggalDari}
+                  onChange={(e) => setTanggalDari(e.target.value)}
+                  className="w-full bg-stone-50 border border-stone-200 text-stone-800 text-sm font-bold rounded-2xl px-5 py-4 focus:outline-none focus:border-[#e61e25] focus:ring-4 focus:ring-[#e61e25]/10 transition-all cursor-pointer"
+                />
+              </div>
+
+              {/* Date To */}
+              <div>
+                <label className="text-[11px] font-extrabold uppercase tracking-widest text-stone-500 mb-2.5 block">
+                  Sampai Tanggal
+                </label>
+                <input
+                  type="date"
+                  value={tanggalSampai}
+                  onChange={(e) => setTanggalSampai(e.target.value)}
+                  min={tanggalDari || undefined}
+                  className="w-full bg-stone-50 border border-stone-200 text-stone-800 text-sm font-bold rounded-2xl px-5 py-4 focus:outline-none focus:border-[#e61e25] focus:ring-4 focus:ring-[#e61e25]/10 transition-all cursor-pointer"
+                />
               </div>
             </div>
 
-            {/* Status Filter */}
-            <div>
-              <label className="block font-body text-xs uppercase tracking-widest font-semibold text-on-surface-variant mb-2">
-                Status
-              </label>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full bg-surface-container-low border-none rounded-lg font-body text-sm text-on-surface py-2.5 px-3 focus:ring-1 focus:ring-primary"
-              >
-                <option value="all">Semua</option>
-                <option value="pending">Menunggu</option>
-                <option value="processing">Diproses</option>
-                <option value="completed">Selesai</option>
-                <option value="cancelled">Dibatalkan</option>
-              </select>
-            </div>
-
-            {/* Spacer for alignment on large screens */}
-            <div className="hidden lg:block" />
-
-            {/* Date From */}
-            <div>
-              <label className="block font-body text-xs uppercase tracking-widest font-semibold text-on-surface-variant mb-2">
-                Tanggal Dari
-              </label>
-              <input
-                type="date"
-                value={tanggalDari}
-                onChange={(e) => setTanggalDari(e.target.value)}
-                className="w-full bg-surface-container-low border-none rounded-lg font-body text-sm text-on-surface py-2.5 px-3 focus:ring-1 focus:ring-primary"
-              />
-            </div>
-
-            {/* Date To */}
-            <div>
-              <label className="block font-body text-xs uppercase tracking-widest font-semibold text-on-surface-variant mb-2">
-                Tanggal Sampai
-              </label>
-              <input
-                type="date"
-                value={tanggalSampai}
-                onChange={(e) => setTanggalSampai(e.target.value)}
-                min={tanggalDari || undefined}
-                className="w-full bg-surface-container-low border-none rounded-lg font-body text-sm text-on-surface py-2.5 px-3 focus:ring-1 focus:ring-primary"
-              />
-            </div>
+            {/* Clear filters */}
+            {hasActiveFilters && (
+              <div className="flex justify-end mt-6 pt-6 border-t border-stone-100">
+                <button
+                  onClick={handleClearFilters}
+                  className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-widest text-[#e61e25] hover:text-red-700 bg-red-50 hover:bg-red-100 px-5 py-2.5 rounded-xl transition-colors border border-red-100"
+                >
+                  <span className="material-symbols-outlined text-[16px]">filter_alt_off</span>
+                  Reset Filter
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Clear filters */}
-          {hasActiveFilters && (
-            <div className="flex justify-end">
-              <button
-                onClick={handleClearFilters}
-                className="font-body text-xs font-semibold text-primary underline underline-offset-4 decoration-1 hover:text-primary/70 transition-colors"
-              >
-                Hapus semua filter
-              </button>
+          {/* Table Card */}
+          <div className="bg-white rounded-[2rem] shadow-sm border border-stone-100 p-8 flex flex-col gap-2">
+            
+            {/* Header */}
+            <div className="hidden lg:grid grid-cols-12 gap-6 pb-4 border-b border-stone-100 px-6">
+              <div className="col-span-2 text-[10px] font-extrabold text-stone-400 uppercase tracking-widest">No. Order</div>
+              <div className="col-span-3 text-[10px] font-extrabold text-stone-400 uppercase tracking-widest">Pelanggan</div>
+              <div className="col-span-2 text-[10px] font-extrabold text-stone-400 uppercase tracking-widest">Tanggal</div>
+              <div className="col-span-2 text-[10px] font-extrabold text-stone-400 uppercase tracking-widest text-right">Tagihan</div>
+              <div className="col-span-1 text-[10px] font-extrabold text-stone-400 uppercase tracking-widest text-center">Status</div>
+              <div className="col-span-2 text-[10px] font-extrabold text-stone-400 uppercase tracking-widest text-right">Aksi</div>
             </div>
-          )}
-        </div>
 
-        {/* Table */}
-        <div className="bg-surface-container-lowest rounded-xl overflow-hidden">
-          {loading ? (
-            <SectionLoader />
-          ) : error ? (
-            <div className="flex flex-col items-center justify-center py-24 gap-3">
-              <span className="material-symbols-outlined text-4xl text-red-400">error_outline</span>
-              <p className="font-body text-sm text-red-500">{error}</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="font-body text-xs text-primary underline underline-offset-4"
-              >
-                Coba lagi
-              </button>
-            </div>
-          ) : filteredOrders.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 gap-3 text-on-surface-variant">
-              <span className="material-symbols-outlined text-4xl">receipt_long</span>
-              <p className="font-body text-sm">
-                {orders.length === 0
-                  ? "Belum ada transaksi tercatat."
-                  : "Tidak ada transaksi yang cocok dengan filter."}
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-surface-container-low border-b border-outline-variant">
-                  <tr>
-                    <th className="text-left font-body text-xs uppercase tracking-widest text-on-surface-variant px-6 py-4">
-                      No. Order
-                    </th>
-                    <th className="text-left font-body text-xs uppercase tracking-widest text-on-surface-variant px-4 py-4">
-                      Pelanggan
-                    </th>
-                    <th className="text-left font-body text-xs uppercase tracking-widest text-on-surface-variant px-4 py-4">
-                      Produk
-                    </th>
-                    <th className="text-right font-body text-xs uppercase tracking-widest text-on-surface-variant px-4 py-4">
-                      Jumlah
-                    </th>
-                    <th className="text-center font-body text-xs uppercase tracking-widest text-on-surface-variant px-4 py-4">
-                      Status
-                    </th>
-                    <th className="text-left font-body text-xs uppercase tracking-widest text-on-surface-variant px-4 py-4">
-                      Tanggal
-                    </th>
-                    <th className="px-6 py-4 text-left font-body text-xs uppercase tracking-widest text-on-surface-variant">
-                      Aksi
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-outline-variant/30">
-                  {filteredOrders.map((order) => (
-                    <tr
-                      key={order.id}
-                      className="hover:bg-surface-container-low/60 transition-colors group"
-                    >
-                      <td className="px-6 py-4">
-                        <span className="font-mono text-xs font-semibold text-primary bg-primary/5 px-2 py-1 rounded">
-                          {order.order_code}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4">
-                        <p className="font-medium text-on-surface">{order.customer_name}</p>
-                        {order.customer_phone && (
-                          <p className="text-xs text-on-surface-variant mt-0.5">{order.customer_phone}</p>
-                        )}
-                      </td>
-                      <td className="px-4 py-4 text-on-surface-variant">
-                        {formatProductSummary(order.items)}
-                      </td>
-                      <td className="px-4 py-4 text-right font-semibold text-on-surface">
-                        {formatIDR(order.total_amount)}
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <StatusBadge status={order.status} />
-                      </td>
-                      <td className="px-4 py-4 text-on-surface-variant text-xs whitespace-nowrap">
-                        {formatDate(order.created_at)}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => setSelectedOrder(order)}
-                            className="font-body text-xs font-semibold text-primary underline underline-offset-2 decoration-1 hover:text-primary/70 transition-colors whitespace-nowrap"
-                          >
-                            Lihat Detail
-                          </button>
-                          <button
-                            onClick={() => handleDownload(order, "invoice")}
-                            disabled={downloadingId === `${order.id}-invoice`}
-                            title="Unduh Invoice"
-                            className="inline-flex items-center justify-center w-7 h-7 rounded-md hover:bg-surface-container-high text-on-surface-variant hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                          >
-                            {downloadingId === `${order.id}-invoice` ? (
-                              <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
-                            ) : (
-                              <span className="material-symbols-outlined text-[16px]">receipt_long</span>
-                            )}
-                          </button>
-                          <button
-                            onClick={() => handleDownload(order, "packing-list")}
-                            disabled={downloadingId === `${order.id}-packing-list`}
-                            title="Unduh Packing List"
-                            className="inline-flex items-center justify-center w-7 h-7 rounded-md hover:bg-surface-container-high text-on-surface-variant hover:text-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                          >
-                            {downloadingId === `${order.id}-packing-list` ? (
-                              <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
-                            ) : (
-                              <span className="material-symbols-outlined text-[16px]">inventory_2</span>
-                            )}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {/* Table footer: result count */}
-              <div className="px-6 py-4 border-t border-outline-variant/30 flex items-center justify-between">
-                <p className="font-body text-xs text-on-surface-variant">
-                  Menampilkan{" "}
-                  <span className="font-semibold text-on-surface">{filteredOrders.length}</span>{" "}
-                  dari <span className="font-semibold text-on-surface">{orders.length}</span> transaksi
+            {/* Loading */}
+            {loading ? (
+              <div className="flex flex-col gap-4 mt-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-6 px-6 py-2">
+                    <Sk className="h-6 w-24 rounded-lg flex-shrink-0" />
+                    <div className="flex flex-col gap-2 flex-1">
+                      <Sk className="h-4 w-40 rounded-full" />
+                      <Sk className="h-3 w-24 rounded-full" />
+                    </div>
+                    <Sk className="h-4 w-32 rounded-full hidden lg:block" />
+                    <Sk className="h-4 w-24 rounded-full hidden lg:block" />
+                    <Sk className="h-8 w-20 rounded-xl hidden lg:block" />
+                    <Sk className="h-10 w-24 rounded-xl flex-shrink-0" />
+                  </div>
+                ))}
+              </div>
+            ) : error ? (
+              <div className="py-20 flex flex-col items-center justify-center text-center">
+                <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined text-[32px]">error</span>
+                </div>
+                <h3 className="text-lg font-bold text-stone-900 mb-1">Gagal memuat data</h3>
+                <p className="text-sm text-stone-500 mb-4">{error}</p>
+                <button onClick={() => window.location.reload()} className="text-[11px] font-extrabold uppercase tracking-widest text-[#e61e25] underline underline-offset-4">
+                  Coba Muat Ulang
+                </button>
+              </div>
+            ) : filteredOrders.length === 0 ? (
+              <div className="py-20 flex flex-col items-center justify-center text-center">
+                <div className="w-20 h-20 bg-stone-50 text-stone-300 rounded-full flex items-center justify-center mb-6">
+                  <span className="material-symbols-outlined text-[40px]">receipt_long</span>
+                </div>
+                <h3 className="text-lg font-black text-stone-900 mb-2">Tidak Ada Transaksi</h3>
+                <p className="text-sm text-stone-500 font-medium">
+                  {orders.length === 0 ? "Sistem belum mencatat transaksi apa pun." : "Tidak ada transaksi yang cocok dengan filter yang Anda pasang."}
                 </p>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="flex flex-col gap-2 mt-2">
+                {filteredOrders.map((order) => (
+                  <div
+                    key={order.id}
+                    onClick={() => setSelectedOrder(order)}
+                    className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center hover:bg-stone-50 transition-colors p-5 lg:px-6 rounded-2xl group border border-transparent hover:border-stone-100 cursor-pointer"
+                  >
+                    {/* Order Code */}
+                    <div className="col-span-1 lg:col-span-2">
+                      <span className="inline-block px-3 py-1.5 bg-stone-100 text-stone-800 border border-stone-200 font-mono text-[11px] font-bold tracking-wider rounded-lg">
+                        {order.order_code}
+                      </span>
+                    </div>
+
+                    {/* Customer */}
+                    <div className="col-span-1 lg:col-span-3">
+                      <p className="font-extrabold text-[15px] text-stone-900 group-hover:text-[#e61e25] transition-colors leading-tight mb-1">
+                        {order.customer_name}
+                      </p>
+                      <p className="text-xs font-semibold text-stone-400">
+                        {formatProductSummary(order.items)}
+                      </p>
+                    </div>
+
+                    {/* Date */}
+                    <div className="col-span-1 lg:col-span-2 hidden lg:block text-xs font-bold text-stone-500">
+                      {formatDate(order.created_at)}
+                    </div>
+
+                    {/* Total */}
+                    <div className="col-span-1 lg:col-span-2 hidden lg:block text-right font-black text-[15px] text-stone-900">
+                      {formatIDR(order.total_amount)}
+                    </div>
+
+                    {/* Status */}
+                    <div className="col-span-1 text-center hidden lg:block">
+                      <StatusBadge status={order.status} />
+                    </div>
+
+                    {/* Actions */}
+                    <div className="col-span-1 lg:col-span-2 flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => handleDownload(order, "invoice")}
+                        disabled={downloadingId === `${order.id}-invoice`}
+                        title="Unduh Invoice"
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-stone-50 text-stone-500 hover:text-white hover:bg-stone-900 transition-colors border border-stone-200 hover:border-stone-900 disabled:opacity-50"
+                      >
+                        {downloadingId === `${order.id}-invoice` ? (
+                          <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                        ) : (
+                          <span className="material-symbols-outlined text-[18px]">receipt_long</span>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => handleDownload(order, "packing-list")}
+                        disabled={downloadingId === `${order.id}-packing-list`}
+                        title="Unduh Packing List"
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-stone-50 text-stone-500 hover:text-white hover:bg-stone-900 transition-colors border border-stone-200 hover:border-stone-900 disabled:opacity-50"
+                      >
+                        {downloadingId === `${order.id}-packing-list` ? (
+                          <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                        ) : (
+                          <span className="material-symbols-outlined text-[18px]">inventory_2</span>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => setSelectedOrder(order)}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 text-[#e61e25] hover:text-white hover:bg-[#e61e25] transition-colors border border-red-100 hover:border-[#e61e25]"
+                        title="Lihat Detail"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">visibility</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Footer Summary */}
+            {!loading && filteredOrders.length > 0 && (
+              <div className="mt-6 pt-6 border-t border-stone-100 text-center">
+                <span className="text-[11px] font-bold uppercase tracking-widest text-stone-400">
+                  Menampilkan {filteredOrders.length} dari {orders.length} transaksi
+                </span>
+              </div>
+            )}
+
+          </div>
         </div>
       </div>
 
@@ -596,4 +642,4 @@ export default function RiwayatTransaksi() {
       )}
     </>
   );
-}
+} 
