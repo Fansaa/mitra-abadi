@@ -12,7 +12,7 @@ export default function EditSpesimen() {
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "", category_id: "", price_min: "", price_max: "",
-    sku_code: "", yard_per_roll: "", description: "",
+    sku_code: "", description: "",
   });
   const [variants, setVariants] = useState([]);
 
@@ -28,7 +28,6 @@ export default function EditSpesimen() {
         price_min: p.price_min ?? "",
         price_max: p.price_max ?? "",
         sku_code: p.sku_code ?? "",
-        yard_per_roll: p.yard_per_roll ?? "",
         description: p.description ?? "",
       });
       setVariants(p.variants ?? []);
@@ -177,16 +176,6 @@ export default function EditSpesimen() {
                     placeholder="150000"
                   />
                 </div>
-                <div>
-                  <label className="ledger-label">Yard/Roll</label>
-                  <input
-                    type="number"
-                    className="ledger-input"
-                    value={form.yard_per_roll}
-                    onChange={(e) => handleChange("yard_per_roll", e.target.value)}
-                    placeholder="55"
-                  />
-                </div>
               </div>
             </section>
 
@@ -199,24 +188,20 @@ export default function EditSpesimen() {
                 </h2>
                 <div className="flex flex-col gap-8">
                   {variants.map((v) => (
-                    <div key={v.id} className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-6 border-b border-outline-variant/20 last:border-0 last:pb-0">
+                    <div key={v.id} className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-outline-variant/20 last:border-0 last:pb-0">
                       <div>
-                        <label className="ledger-label">Nama Warna</label>
-                        <input
-                          type="text"
-                          className="ledger-input"
-                          value={v.color_name ?? ""}
-                          onChange={(e) => handleVariantChange(v.id, "color_name", e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <label className="ledger-label">Hex Warna</label>
-                        <input
-                          type="color"
-                          className="ledger-input h-10 cursor-pointer"
-                          value={v.color_hex ?? "#000000"}
-                          onChange={(e) => handleVariantChange(v.id, "color_hex", e.target.value)}
-                        />
+                        <label className="ledger-label">Warna</label>
+                        <div className="flex items-center gap-3 border-b border-outline-variant py-1.5">
+                          <input
+                            type="color"
+                            className="w-9 h-9 cursor-pointer border-0 bg-transparent p-0 flex-shrink-0"
+                            value={v.color_hex ?? "#000000"}
+                            onChange={(e) => handleVariantChange(v.id, "color_hex", e.target.value)}
+                          />
+                          <span className="font-body text-sm text-on-surface font-mono tracking-wider">
+                            {(v.color_hex ?? "#000000").toUpperCase()}
+                          </span>
+                        </div>
                       </div>
                       <div>
                         <label className="ledger-label">Ganti Gambar</label>
